@@ -1,0 +1,51 @@
+{
+    "datasource": {
+      "type": "grafana-azure-monitor-datasource",
+      "uid": "${AzureDataSourceID}"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "color": {
+          "mode": "thresholds"
+        },
+        "mappings": [],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "red",
+              "value": 80
+            }
+          ]
+        }
+      }
+    },
+    "gridPos": {
+      "h": 6,
+      "w": 24,
+      "x": 0,
+      "y": 0
+    },
+    "id": 2,
+    "options": {
+      "orientation": "auto",
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "showThresholdLabels": false,
+      "showThresholdMarkers": true,
+      "text": {}
+    },
+    "pluginVersion": "9.2.5",
+    "title": "CPU Percentage",
+    "transformations": [],
+    "type": "gauge"
+  }

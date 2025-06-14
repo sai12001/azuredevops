@@ -1,0 +1,47 @@
+<policies>
+    <inbound>
+        <base />
+        <cors allow-credentials="true">
+            <allowed-origins>
+                ${dev_origins}
+                ${origins}
+            </allowed-origins>
+            <allowed-methods>
+                <method>*</method>
+            </allowed-methods>
+            <allowed-headers>
+                <header>*</header>
+            </allowed-headers>
+        </cors>
+        <set-header name="X-NextGen-IPAddress" exists-action="override">
+                        <value>@{
+                        string[] IPs;
+                        if (context.Request.Headers.TryGetValue("X-Forwarded-For", out IPs))
+                        {
+                            if(IPs != null && IPs.Length > 0)
+                            {
+                                return IPs[0].Split(',')[0];
+                            }
+                        }
+                        return "0.0.0.0"; }</value>
+        </set-header>
+        <rewrite-uri template="@(context.Api.Path+context.Operation.UrlTemplate)" copy-unmatched-params="true" />
+        <!-- <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized">
+            <issuer-signing-keys>
+                <key>{{ext-auth0-blackstream-signing-key}}</key>
+            </issuer-signing-keys>
+        </validate-jwt> -->
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+        <set-header name="X-Powered-By" exists-action="delete" />
+        <set-header name="Set-Cookie" exists-action="delete" />
+        <set-header name="Request-Context" exists-action="delete" />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

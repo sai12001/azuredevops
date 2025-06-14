@@ -1,0 +1,34 @@
+{
+  "Description": "This configuration will help to map scheduled task with script",
+  "Jobs_Folder": "/",
+  "ScheduledTaskMappings": [
+    {
+      "Resulting_Name": "[Automated]Templating",
+      "Description": "Execute bat file from 02:05 Machine Time every day. Execute every hour and last for 16 hours",
+      "CronSchedules": [
+        {
+          "CronTab": "05 02 * * *",
+          "RepetitionMinutes": 60,
+          "RepetionLastForHours": 16 
+        }
+      ],
+      "TaragetScript": "scheduled_tasks\\job1.bat",
+      "MaxExecutionTimeInMinutes": 30,
+      "Enabled": true
+    },
+    {
+      "Resulting_Name": "[Automated]MLB Resulting Script",
+      "Description": "Result MLB matches",
+      "CronSchedules": [
+        {
+          "CronTab": "05 02 * * *",
+          "RepetitionMinutes": 10,
+          "RepetionLastForHours": 16 
+        }
+      ],
+      "TaragetScript": "scheduled_tasks\\template1.bat",
+      "MaxExecutionTimeInMinutes": 30,
+      "Enabled": true
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+parameters:
+  - name: env
+    type: string
+  - name: product
+    type: string
+    default: ng
+  - name: dependsOn
+    type: string
+    default: build
+  - name: serviceAccountName
+    type: string
+  - name: subscriptionName
+    type: string
+  - name: acrSubscriptionName
+    type: string
+    default: subscription-core-infra-prod
+  - name: executeDeployment
+    type: boolean
+    default: false
+  - name: acrName
+    type: string
+    default: prodAcrBlackstream
+  - name: azureDevOpsEnvName
+    type: string
+  - name: solutionTerraformFolder
+    type: string
+  - name: solutionName
+    type: string
+  - name: isFrontEndApp
+    type: boolean
+    default: false
+  - name: projects
+    type: object
+    default:
+      - appName: "sample1"
+        imageName: "image:latest"
+        appType: "fnapp"
+      - appName: "worker1"
+        imageName: "image2:latest"
+        appType: "webapp"
+      - appname: psql                  
+        path:  Template.DBup
+        appType: psql
+        psqlKvName: dev-kv-ng-whatever-eau 
+        psqlSecretTemplate: psql-connection-template-ado-dev-psql-whatever-shared
+        dbName: db-from-solution
+
+
+stages:
+  - stage: ${{ format('stage_plan_{0}', parameters.env) }}
+    displayName: ${{ format('plan {0}', parameters.env) }}
+    dependsOn: ${{ parameters.dependsOn}}
+    condition: and(succeeded(),or(${{ parameters.executeDeployment}}, or(startsWith(variables['Build.SourceBranch'],'refs/heads/release'), eq(variables['Build.SourceBranchName'],'main')) ))
+    jobs:
+      - deployment: ${{ format('job_plan_{0}', parameters.env) }}
+        displayName: Plan Infra
+        environment: "env-bypass"
+        pool:
+          vmImage: windows-latest
+        variables:
+          env: ${{ parameters.env }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: DevOps
+                  path: s/DevOps
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    source: current
+                    downloadPath: $(Pipeline.Workspace)/s/workload
+                - task: UniversalPackages@0
+                  displayName: Terraform Support Download
+                  inputs:
+                    downloadDirectory: $(Pipeline.Workspace)/s/binaries
+                    vstsFeed: DevOps
+                    vstsFeedPackage: terrafrom_support
+                    vstsPackageVersion: 1.2.2
+                - powershell: |
+                    cd $(Pipeline.Workspace)/s/binaries
+                    ls
+                    Write-Host "##vso[task.prependpath]$(Pipeline.Workspace)/s/binaries"
+                  displayName: Update Path
+                - task: AzureCLI@2
+                  displayName: Plan Infra For Review
+                  inputs:
+                    azureSubscription: ${{ parameters.serviceAccountName}}
+                    addSpnToEnvironment: true
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      terraform --version
+                      terragrunt --veresion
+                      cd $(Pipeline.Workspace)/s/workload
+                      $env = "${{ parameters.env }}"
+                      $env:TF_VAR_environment = "$env"
+                      $env:ARM_CLIENT_ID  =  $Env:servicePrincipalId
+                      $env:ARM_CLIENT_SECRET  = $Env:servicePrincipalKey
+                      $env:ARM_SUBSCRIPTION_ID = $(
+                        (az account list --all --query "[].[name,id]" -o tsv `
+                        | Where-Object {
+                          $_ -Match "${{ parameters.subscriptionName}}"
+                        } `
+                        | Select-Object -First 1
+                        ) -Split "`t"
+                      )[1]
+                      $env:ARM_TENANT_ID =  $Env:tenantId
+                      $env:TG_LOG  =  "info"
+
+                      cd "${{ parameters.solutionTerraformFolder}}"
+                      terragrunt init
+                      terragrunt plan
+  - stage: ${{ format('stage_deploy_{0}', parameters.env) }}
+    displayName: ${{ format('deploy {0}', parameters.env) }}
+    dependsOn: ${{ format('stage_plan_{0}', parameters.env) }}
+    condition: and(succeeded(),or(${{ parameters.executeDeployment}}, or(startsWith(variables['Build.SourceBranch'],'refs/heads/release'), eq(variables['Build.SourceBranchName'],'main')) ))
+    jobs:
+      - deployment: ${{ format('job_deploy_{0}', parameters.env) }}
+        displayName: Provision Infra
+        environment: ${{ parameters.azureDevOpsEnvName }}
+        workspace:
+          clean: all
+        pool:
+          vmImage: windows-latest
+        variables:
+          env: ${{ parameters.env }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: DevOps
+                  path: s/DevOps
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    source: current
+                    downloadPath: $(Pipeline.Workspace)/s/workload
+                - task: UniversalPackages@0
+                  displayName: Terraform Support Download
+                  inputs:
+                    downloadDirectory: $(Pipeline.Workspace)/s/binaries
+                    vstsFeed: DevOps
+                    vstsFeedPackage: terrafrom_support
+                    vstsPackageVersion: 1.2.2
+                - powershell: |
+                    cd $(Pipeline.Workspace)/s/binaries
+                    ls
+                    Write-Host "##vso[task.prependpath]$(Pipeline.Workspace)/s/binaries"
+                  displayName: Update Path
+                - task: AzureCLI@2
+                  displayName: Provision Shared Infra
+                  inputs:
+                    azureSubscription: ${{ parameters.serviceAccountName}}
+                    addSpnToEnvironment: true
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      terraform --version
+                      terragrunt --veresion
+                      cd $(Pipeline.Workspace)/s/workload
+                      $env = "${{ parameters.env }}"
+                      $env:TF_VAR_environment = "$env"
+                      $env:ARM_CLIENT_ID  =  $Env:servicePrincipalId
+                      $env:ARM_CLIENT_SECRET  = $Env:servicePrincipalKey
+                      $env:ARM_SUBSCRIPTION_ID = $(
+                        (az account list --all --query "[].[name,id]" -o tsv `
+                        | Where-Object {
+                          $_ -Match "${{ parameters.subscriptionName}}"
+                        } `
+                        | Select-Object -First 1
+                        ) -Split "`t"
+                      )[1]
+                      $env:ARM_TENANT_ID =  $Env:tenantId
+                      $env:TG_LOG  =  "info"
+
+                      cd "${{ parameters.solutionTerraformFolder}}"
+                      terragrunt init
+                      terragrunt apply -auto-approve
+      - template: ./job-template-webapp-deploy.yaml
+        parameters:
+          env: ${{ parameters.env }}
+          product: ${{parameters.product}}
+          solutionName: ${{parameters.solutionName}}
+          dependsOn: ${{ format('job_deploy_{0}', parameters.env) }}
+          serviceAccountName: ${{ parameters.serviceAccountName}}
+          acrName: ${{ parameters.acrName}}
+          projects: ${{ parameters.projects}}
+          acrServiceAccountName: ${{ parameters.acrSubscriptionName}}
+          isFrontEndApp: ${{ parameters.isFrontEndApp}}

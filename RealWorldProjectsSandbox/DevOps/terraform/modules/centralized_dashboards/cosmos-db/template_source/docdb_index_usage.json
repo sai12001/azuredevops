@@ -1,0 +1,47 @@
+{
+  "datasource": {
+    "type": "grafana-azure-monitor-datasource",
+    "uid": "${AzureDataSourceID}"
+  },
+  "fieldConfig": {
+    "defaults": {
+      "color": {
+        "mode": "thresholds"
+      },
+      "mappings": [],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "color": "green",
+            "value": null
+          }
+        ]
+      }
+    }
+  },
+  "gridPos": {
+    "h": 8,
+    "w": 8,
+    "x": 8,
+    "y": 14
+  },
+  "id": 4,
+  "options": {
+    "color": "value",
+    "graphMode": "area",
+    "justifyMode": "auto",
+    "orientation": "horizontal",
+    "reduceOptions": {
+      "calcs": [
+        "lastNotNull"
+      ],
+      "fields": "",
+      "values": false
+    },
+    "textMode": "auto"
+  },
+  "pluginVersion": "9.2.7-8da65d62",
+  "title": "Index Usage",
+  "type": "stat"
+}

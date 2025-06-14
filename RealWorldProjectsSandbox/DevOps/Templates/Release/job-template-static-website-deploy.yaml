@@ -1,0 +1,55 @@
+parameters:
+  - name: env
+    type: string
+  - name: product
+    type: string
+    default: ng
+  - name: dependsOn
+    type: string
+    default: build
+  - name: serviceAccountName
+    type: string
+  - name: executeDeployment
+    type: boolean
+    default: false
+  - name: azureDevOpsEnvName
+    type: string
+  - name: solutionName
+    type: string
+  - name: projects
+    type: object
+    default:
+      - appname: appname
+        path: "application-path"
+        storageaccount: stasample
+
+jobs:
+  - ${{ each project in parameters.projects }}:
+    - job: ${{ format('job_app_deploy_{0}_{1}', project.appName, parameters.env) }}
+      # dependsOn: ${{ parameters.dependsOn }}
+      displayName: ${{ format('Deploy App [{0}]', project.appName) }}
+      workspace:
+        clean: all
+      pool:
+        vmImage: windows-latest
+      variables:
+        env: ${{ parameters.env }}
+      steps:
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifact: ${{project.path}}
+            path: $(Pipeline.Workspace)/s/workload/${{project.path}}
+        
+        - pwsh: |
+            ls
+            ls $(Pipeline.Workspace)/s/workload/${{project.path}}/dist/apps/${{project.path}}
+            write-host "serviceAccountName :" ${{ parameters.serviceAccountName }}
+
+        - task: AzureCLI@2
+          displayName: Upload to storage account
+          inputs:
+            azureSubscription: ${{ parameters.serviceAccountName }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az storage blob upload-batch -s '$(Pipeline.Workspace)/s/workload/${{project.path}}/dist/apps/${{project.path}}' -d '$web' --account-name '${{project.storageaccount}}' --overwrite true

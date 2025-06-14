@@ -1,0 +1,18 @@
+{
+  "Name": "Lock Manager",
+  "IsCustom": true,
+  "Description": "Can Add Lock to resource group",
+  "Actions": [
+    "Microsoft.Authorization/locks/read",
+    "Microsoft.Authorization/locks/write"
+  ],
+  "NotActions": [
+
+  ],
+  "AssignableScopes": [
+    "/subscriptions/d877ef00-ea85-4a82-816c-b437fb7b1ebc",
+    "/subscriptions/75d2fa14-67cf-41aa-9717-875861f4f0d7",
+    "/subscriptions/7b12ad1c-8c8d-45b7-ba98-4a5ebcc14576",
+    "/subscriptions/af9d6bfd-3529-48cf-90d9-13e51e420a66"
+  ]
+}

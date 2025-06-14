@@ -1,0 +1,147 @@
+parameters:
+  - name: env
+    type: string
+  - name: product
+    type: string
+  - name: solutionName
+    type: string
+  - name: dependsOn
+    type: string
+    default: build
+  - name: serviceAccountName
+    type: string
+  - name: acrServiceAccountName
+    type: string
+    default: subscription-core-infra-prod
+  - name: acrName
+    type: string
+    default: prodAcrBlackstream
+  - name: isFrontEndApp
+    type: boolean
+    default: false
+  - name: projects
+    type: object
+    default:
+      - appName: "api"
+        imageName: "image1:latest"
+        appType: "fnapp"
+      - appName: "worker"
+        imageName: "image2:latest"
+        appType: "webapp"
+
+jobs:
+  - ${{ each project in parameters.projects }}:
+      - ${{ if or(eq(project.appType, 'fnapp'), eq(project.appType, ''),eq(project.appType, 'webapp')) }}:
+        - job: ${{ format('job_appdeploy_{0}_{1}', project.appName, parameters.env) }}
+          ${{ if ne(parameters.dependsOn,'null') }}:
+            dependsOn: ${{ parameters.dependsOn }}
+          displayName: ${{ format('Deploy App [{0}]', project.appName) }}
+          workspace:
+            clean: all
+          variables:
+            env: ${{ parameters.env }}
+          pool:
+            name: vmss-private-agents-win
+          steps:
+            - task: AzureCLI@2
+              displayName: Get ACR Credentials
+              inputs:
+                azureSubscription: ${{ parameters.acrServiceAccountName}}
+                scriptType: pscore
+                scriptLocation: inlineScript
+                inlineScript: |
+                  $passwords = (az acr credential show --name ${{parameters.acrName}}) | convertfrom-json
+                  $primaryPassword = $passwords.passwords[0].value
+                  Write-Host "##vso[task.setvariable variable=AcrPassword]$primaryPassword"
+            - pwsh: |
+                if("${{project.appType}}" -ieq ""){
+                  $appType = "fnapp"
+                } 
+                else{
+                  $appType = "${{project.appType}}"
+                }
+                $appName = "${{parameters.env}}-$appType-${{parameters.product}}-${{parameters.solutionName}}-${{project.appName}}-eau"
+                $rgName = "${{parameters.env}}-rg-${{parameters.product}}-${{parameters.solutionName}}-eau"
+                Write-Host "##vso[task.setvariable variable=project.appName]$appName"
+                Write-Host "##vso[task.setvariable variable=project.resourceGroup]$rgName"
+              displayName: Config Map
+            - task: AzureAppServiceManage@0
+              displayName: Start Slot
+              inputs:
+                azureSubscription: ${{ parameters.serviceAccountName}}
+                Action: "Start Azure App Service"
+                WebAppName: $(project.appName)
+                SpecifySlotOrASE: true
+                resourceGroupName: $(project.resourceGroup)
+                Slot: stage
+            - task: AzureCLI@2
+              displayName: Deploy Docker Container
+              inputs:
+                azureSubscription: ${{ parameters.serviceAccountName}}
+                scriptType: pscore
+                scriptLocation: inlineScript
+                inlineScript: |
+                  $registryName = "${{ parameters.acrName}}"
+                  $appImageName = "${{ project.imageName}}"
+                  $isFrontEndApp = "${{parameters.isFrontEndApp}}"
+                  
+                  if($isFrontEndApp -ieq "true")
+                  {
+                    $imageName = ("$registryName.azurecr.io/"+"$appImageName"+":"+"${{parameters.env}}-"+"$(Build.BuildNumber)").ToLower()
+                  }
+                  else
+                  {
+                    $imageName = ("$registryName.azurecr.io/"+"$appImageName"+":"+"$(Build.BuildNumber)").ToLower()
+                  }
+                  
+                  $appImageName
+                  $imageName
+                  az webapp config container set --slot stage --docker-custom-image-name $imageName `
+                  --docker-registry-server-password $(AcrPassword) `
+                  --docker-registry-server-url "https://$registryName.azurecr.io" `
+                  --docker-registry-server-user $registryName --name $(project.appName) `
+                  --resource-group $(project.resourceGroup)
+            - task: AzureAppServiceManage@0
+              displayName: Swap slot with production
+              inputs:
+                azureSubscription: ${{ parameters.serviceAccountName}}
+                WebAppName: $(project.appName)
+                resourceGroupName: $(project.resourceGroup)
+                SourceSlot: stage
+                PreserveVnet: true
+            - task: AzureAppServiceManage@0
+              displayName: Stop Slot
+              inputs:
+                azureSubscription: ${{ parameters.serviceAccountName}}
+                Action: "Stop Azure App Service"
+                WebAppName: $(project.appName)
+                SpecifySlotOrASE: true
+                resourceGroupName: $(project.resourceGroup)
+                Slot: stage
+            - ${{if eq(project.updateApim, 'true')}}:
+              - checkout: DevOps
+                path: s/DevOps
+              - task: DownloadPipelineArtifact@2
+                inputs:
+                  source: current
+                  downloadPath: $(Pipeline.Workspace)/s/workload
+              - task: AzurePowerShell@5 
+                displayName: Deploy Api
+                inputs:
+                  azureSubscription: ${{ parameters.serviceAccountName}}
+                  pwsh: true
+                  azurePowerShellVersion: LatestVersion
+                  scriptType: "filePath"
+                  scriptPath:  "$(Pipeline.Workspace)/s/DevOps/SharedScripts/deploy-apim.ps1"
+                  ScriptArguments:  
+                    -environment "${{parameters.env}}"
+                    -scriptPath "$(Pipeline.Workspace)/s/workload/apiManagement"
+      - ${{ if eq(project.appType, 'psql') }}:    
+        - job: ${{ format('job_psql_deploy_{0}_{1}', project.appName, parameters.env) }}
+          dependsOn: ${{ parameters.dependsOn }}
+          displayName: 'Will Fail Here'
+          steps:
+            - pwsh: |
+                Write-Error "PSQL Deployment need to use seperate pipeline"
+              displayName: Expect Failure
+

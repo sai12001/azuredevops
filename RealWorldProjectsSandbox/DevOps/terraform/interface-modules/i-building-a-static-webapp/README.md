@@ -1,0 +1,6 @@
+## storage account
+
+
+## static webapp
+
+

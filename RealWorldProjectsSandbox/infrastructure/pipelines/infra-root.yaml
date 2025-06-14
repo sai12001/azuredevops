@@ -1,0 +1,63 @@
+name: $(mainVersion).$(minorVersion).$(Date:yyyyMMdd).$(Rev:r)
+
+trigger:
+  branches:
+    include:
+    - main
+    - release/*
+  paths:
+    exclude:
+    - infrastructure/terraform/global
+    - infrastructure/environments/global
+
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  mainVersion: 1
+  minorVersion: 0
+  product: ng
+  buildConfiguration: Release
+  terraformFolder: infrastructure/terraform/infra/root
+
+resources:
+  repositories:
+    - repository: DevOps
+      type: git
+      name: DevOps
+      ref: main
+
+stages:
+  - template: Templates/Release/infra-provision.yaml@DevOps
+    parameters:
+      env: dev
+      azureDevOpsEnvName: infra-dev
+      serviceAccountName: dev-spn-ng-aks-cluster
+      subscriptionName: nextgen-dev
+      dependsOn: null
+      product: $(product)
+      terraformFolder: $(terraformFolder)
+      executeDeployment: true
+
+  - template: Templates/Release/infra-provision.yaml@DevOps
+    parameters:
+      env: stg
+      azureDevOpsEnvName: infra-stg
+      serviceAccountName: stg-spn-ng-aks-cluster
+      subscriptionName: nextgen-stg
+      dependsOn: stage_deploy_dev
+      product: $(product)
+      terraformFolder: $(terraformFolder)
+      executeDeployment: false
+
+  - template: Templates/Release/infra-provision.yaml@DevOps
+    parameters:
+      env: prd
+      azureDevOpsEnvName: infra-prd
+      serviceAccountName: prd-spn-ng-aks-cluster
+      subscriptionName: nextgen-prd
+      dependsOn: stage_deploy_stg
+      product: $(product)
+      terraformFolder: $(terraformFolder)
+      executeDeployment: false

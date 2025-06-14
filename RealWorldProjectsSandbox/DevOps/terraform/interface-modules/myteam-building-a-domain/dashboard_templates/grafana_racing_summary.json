@@ -1,0 +1,2659 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 134,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 8,
+        "panels": [],
+        "title": "Overall",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 4,
+          "x": 0,
+          "y": 1
+        },
+        "id": 12,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.4",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "customNamespace": "Azure.ApplicationInsights",
+              "dimensionFilters": [],
+              "metricName": "RacingMarketsUpdateEventHubTrigger Failures",
+              "metricNamespace": "microsoft.insights/components",
+              "resourceGroup": "${RACING_DATATOOL_RESOURCE_GROUP}",
+              "resourceName": "${RACING_DATATOOL_RESOURCE_AI}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Markets Update EH Trigger Failures",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "description": "% Meetings Publish EventHub",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              }
+            },
+            "mappings": [],
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 4,
+          "x": 4,
+          "y": 1
+        },
+        "id": 16,
+        "options": {
+          "displayLabels": [
+            "name",
+            "value"
+          ],
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "pieType": "pie",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "// Tab Ingress - Outbound\r\ndependencies\r\n| where type == \"Azure Event Hubs\" and name == \"EventHubProducerClient.Send\" and $__timeFilter(timestamp)\r\n| extend sentOk = success == true\r\n| summarize MsgSent=countif(sentOk), MsgTotal=count(), LatestTimestamp = max(timestamp)",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${TABINGRESS_ENG_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${TABINGRESS_ENG_RESOURCE_AI}"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "Tab Ingress - Outbound",
+        "transformations": [
+          {
+            "id": "calculateField",
+            "options": {
+              "binary": {
+                "left": "MsgSent",
+                "operator": "/",
+                "reducer": "sum",
+                "right": "MsgTotal"
+              },
+              "mode": "binary",
+              "reduce": {
+                "reducer": "sum"
+              },
+              "replaceFields": false
+            }
+          }
+        ],
+        "type": "piechart"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 11,
+          "x": 8,
+          "y": 1
+        },
+        "id": 10,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "customNamespace": "Azure.ApplicationInsights",
+              "dimensionFilters": [],
+              "metricName": "RacingMarketsUpdateEventHubTrigger MaxDurationMs",
+              "metricNamespace": "microsoft.insights/components",
+              "resourceGroup": "${RACING_DATATOOL_RESOURCE_GROUP}",
+              "resourceName": "${RACING_DATATOOL_RESOURCE_AI}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "customNamespace": "Azure.ApplicationInsights",
+              "dimensionFilters": [],
+              "metricName": "RacingMarketsUpdateEventHubTrigger Count",
+              "metricNamespace": "microsoft.insights/components",
+              "resourceGroup": "${RACING_DATATOOL_RESOURCE_GROUP}",
+              "resourceName": "${RACING_DATATOOL_RESOURCE_AI}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Markets Update EH Trigger Max Duration",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-GrYlRd"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Count Check"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Races Checked"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Count Update"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Races Updated"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 5,
+          "x": 19,
+          "y": 1
+        },
+        "id": 24,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "center",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.4",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "// DO Ingress Fail-Safe (Inbound/Outbound)\r\ntraces\r\n| where cloud_RoleName has \"doingress-eng-engine\" and $__timeFilter(timestamp)\r\n| where  message startswith \"[Fail-Safe] Process delayed message\"\r\n        or message has \"Update race.\"\r\n| extend IsRaceCheckOps = message startswith \"[Fail-Safe] Process delayed message\"\r\n| extend IsRaceUpdateOps = message has \"Update race.\"\r\n| extend Ops=iff(IsRaceCheckOps, \"Check\", \"Update\")\r\n| extend MessageBody = parse_json(tostring(customDimensions.prop__body))\r\n| extend MeetingId = iff(isempty(MessageBody), tostring(customDimensions.prop__meetingId), MessageBody.meetingId)\r\n| extend RaceNumber = iff(isempty(MessageBody), tostring(customDimensions.prop__raceNumber), MessageBody.raceNumber)\r\n| extend RaceIdentity = strcat(MeetingId, \"-\", RaceNumber)\r\n| project timestamp, RaceIdentity, Ops\r\n| summarize Count=dcount(RaceIdentity), LatestTimestamp = max(timestamp) by Ops\r\n| order by Ops",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${DOINGRESS_ENG_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${DOINGRESS_ENG_RESOURCE_AI}"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "DO Ingress - Fail-Safe",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "fillOpacity": 80,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineWidth": 1,
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 8,
+          "x": 0,
+          "y": 8
+        },
+        "id": 20,
+        "options": {
+          "barRadius": 0,
+          "barWidth": 0.97,
+          "groupWidth": 0.7,
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "orientation": "horizontal",
+          "showValue": "auto",
+          "stacking": "none",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          },
+          "xTickLabelRotation": 0,
+          "xTickLabelSpacing": 0
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "// SignalR Publisher - Outbound\r\ntraces\r\n| where message startswith \"Processing\" and $__timeFilter(timestamp)\r\n| extend InboundType = replace_string(tostring(customDimensions.prop__inboundMessageType), \"Racing.TbsCrud.Models.\", \"\")\r\n| extend OutboundType = replace_string(tostring(customDimensions.prop__outboundMessageType), \"Racing.SignalR.Publisher.Model.\", \"\")\r\n| extend TbsRaceId = replace_string(tostring(customDimensions.prop__signalRMessageTarget), \"RaceSubscription_\", \"\")\r\n| project timestamp, InboundType, OutboundType, TbsRaceId\r\n| summarize Count = dcount(TbsRaceId), LatestTimestamp = max(timestamp) by InboundType\r\n| order by LatestTimestamp desc",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${SIGR_ENG_RESORUCE_GROUP}/providers/Microsoft.Insights/components/${SIGR_ENG_RESOURCE_AI}"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "SignalR Publisher - Outbound",
+        "type": "barchart"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 16,
+          "x": 8,
+          "y": 8
+        },
+        "id": 14,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "IncomingRequests",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "ThrottledRequests",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "SuccessfulRequests",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "IncomingMessages",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "D",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "OutgoingMessages",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "E",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Event Hub Requests",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "fillOpacity": 80,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineWidth": 1,
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 14,
+          "x": 0,
+          "y": 15
+        },
+        "id": 22,
+        "options": {
+          "barRadius": 0,
+          "barWidth": 0.97,
+          "groupWidth": 0.7,
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "orientation": "horizontal",
+          "showValue": "auto",
+          "stacking": "none",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          },
+          "xTickLabelRotation": 0,
+          "xTickLabelSpacing": 0
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "traces\r\n| where message startswith \"Called TbsCrudEngineApi\" and $__timeFilter(timestamp)\r\n| extend prop__url_ = tostring(customDimensions.prop__url)\r\n| extend prop__apiResponse_ = tostring(customDimensions.prop__apiResponse)\r\n| extend OperationAndResult = strcat(prop__url_, \" - \", tostring(customDimensions.prop__apiResponse))\r\n| summarize Count = count(), LatestTimestamp = max(timestamp) by OperationAndResult\r\n| order by LatestTimestamp desc",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${DOHANDLER_ENG_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${DOHANDLER_ENG_RESOURCE_AI}",
+              "resultFormat": "table"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "DO Handler - Outbound",
+        "type": "barchart"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "description": "Traffic including live feed subscriptions and manual fetching from DO Ingress",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "fillOpacity": 80,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineWidth": 1,
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 10,
+          "x": 14,
+          "y": 15
+        },
+        "id": 18,
+        "options": {
+          "barRadius": 0,
+          "barWidth": 0.97,
+          "groupWidth": 0.7,
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "orientation": "horizontal",
+          "showValue": "auto",
+          "stacking": "none",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          },
+          "xTickLabelRotation": 0,
+          "xTickLabelSpacing": 0
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "// Handler - Inbound Subscription\r\ntraces\r\n| where message startswith \"Handling\" and $__timeFilter(timestamp)\r\n| extend ContractType = replace_string(tostring(customDimensions.prop__contractType), \"Racing.DynamicOdds.Models.\", \"\")\r\n| extend RaceIdentity = strcat(tostring(customDimensions.prop__meetingId), \"-\", tostring(customDimensions.prop__raceNumber))\r\n| project timestamp, ContractType, RaceIdentity\r\n| summarize Count = dcount(RaceIdentity), LatestTimestamp = max(timestamp) by ContractType\r\n| order by LatestTimestamp desc\r\n\r\n\r\n\r\n// traces\r\n// | where message startswith \"Handling\" and $__timeFilter(timestamp)\r\n// | extend ContractType = replace_string(tostring(customDimensions.prop__contractType), \"Feeds.Racing.DynamicOdds.Models.\", \"\")\r\n// | project timestamp, ContractType\r\n// | summarize Count = count(), LatestTimestamp = max(timestamp) by ContractType\r\n// | order by LatestTimestamp desc",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${DOHANDLER_ENG_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${DOHANDLER_ENG_RESOURCE_AI}",
+              "resultFormat": "table"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "DO Handler - Inbound",
+        "type": "barchart"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "fillOpacity": 80,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineWidth": 1,
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 25
+        },
+        "id": 42,
+        "options": {
+          "barRadius": 0,
+          "barWidth": 0.97,
+          "groupWidth": 0.7,
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "orientation": "horizontal",
+          "showValue": "auto",
+          "stacking": "none",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          },
+          "xTickLabelRotation": 0,
+          "xTickLabelSpacing": 0
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "traces\r\n| where message startswith \"Processing\" and $__timeFilter(timestamp)\r\n| extend OperationAndResult = strcat(operation_Name, \" - \", tostring(customDimensions.prop__result))\r\n| summarize Count = count(), LatestTimestamp = max(timestamp) by OperationAndResult\r\n| order by LatestTimestamp desc\r\n\r\n",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${TBSCRUD_ENG_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${TBSCRUD_ENG_RESOURCE_AI}",
+              "resultFormat": "table"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "TbsCrud - Inbound",
+        "type": "barchart"
+      },
+      {
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 34
+        },
+        "id": 6,
+        "title": "Failures",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Count"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "OperationAndResult"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 458
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "problemId"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 170
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Message"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 593
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 12,
+          "w": 8,
+          "x": 0,
+          "y": 35
+        },
+        "id": 35,
+        "options": {
+          "footer": {
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": []
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "exceptions\r\n| where $__timeFilter(timestamp)\r\n| extend errorType = replace_string(type, \"Racing.DynamicOdds.Ingress.Core.Exceptions.\", \"\")\r\n| project timestamp, Message = errorType\r\n| summarize Count = count(), LatestTimestamp = max(timestamp) by Message\r\n| order by LatestTimestamp desc",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${DOINGRESS_ENG_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${DOINGRESS_ENG_RESOURCE_AI}",
+              "resultFormat": "table"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "DO Ingress - Exceptions",
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 4,
+          "x": 8,
+          "y": 35
+        },
+        "id": 33,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureLogAnalytics": {
+              "query": "traces\r\n| where message startswith \"Model Validation\" and $__timeFilter(timestamp)\r\n| extend prop__type_ = tostring(customDimensions.prop__type)\r\n| extend ErrorMessage_ = tostring(parse_json(tostring(customDimensions.prop__validationResults))[0].ErrorMessage)\r\n| extend OperationAndResult = strcat(prop__type_, \" - \", ErrorMessage_)\r\n| summarize Count = count(), LatestTimestamp = max(timestamp) by OperationAndResult\r\n| order by LatestTimestamp desc",
+              "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${DOHANDLER_ENG_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${DOHANDLER_ENG_RESOURCE_AI}",
+              "resultFormat": "table"
+            },
+            "azureMonitor": {
+              "allowedTimeGrainsMs": [],
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Log Analytics",
+            "refId": "A"
+          }
+        ],
+        "title": "DO Handler - Model Validation Failures",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 4,
+          "x": 12,
+          "y": 35
+        },
+        "id": 36,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "connections_failed",
+              "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_PSQL}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Postgres Connection Failure",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 70
+                },
+                {
+                  "color": "red",
+                  "value": 85
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 16,
+          "y": 35
+        },
+        "id": 40,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "UserErrors",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "ServerErrors",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "QuotaExceededErrors",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "D",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Event Hub Namespace Errors",
+        "type": "gauge"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 4,
+          "x": 8,
+          "y": 41
+        },
+        "id": 31,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Count",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                3600000,
+                86400000
+              ],
+              "dimensionFilters": [
+                {
+                  "dimension": "StatusCode",
+                  "filters": [
+                    "429"
+                  ],
+                  "operator": "eq"
+                }
+              ],
+              "metricName": "TotalRequests",
+              "metricNamespace": "microsoft.documentdb/databaseaccounts",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_DOCDB}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Cosmos DB 429 Errors",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 30,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 41
+        },
+        "id": 43,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Count",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "customNamespace": "microsoft.insights/components",
+              "dimensionFilters": [],
+              "metricName": "requests/failed",
+              "metricNamespace": "microsoft.insights/components",
+              "resourceGroup": "${RACING_DATATOOL_RESOURCE_GROUP}",
+              "resourceName": "${RACING_DATATOOL_RESOURCE_AI}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Count",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "customNamespace": "microsoft.insights/components",
+              "dimensionFilters": [],
+              "metricName": "requests/failed",
+              "metricNamespace": "microsoft.insights/components",
+              "resourceGroup": "${RACING_ENG_RESOURCE_GROUP}",
+              "resourceName": "${RACING_ENG_RESOURCE_AI}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Count",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "customNamespace": "microsoft.insights/components",
+              "dimensionFilters": [],
+              "metricName": "requests/failed",
+              "metricNamespace": "microsoft.insights/components",
+              "resourceGroup": "${RACING_XL_RESOURCE_GROUP}",
+              "resourceName": "${RACING_XL_RESOURCE_AI}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "D",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Failed Requests",
+        "type": "timeseries"
+      },
+      {
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 47
+        },
+        "id": 4,
+        "title": "Resource Perfomance",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 30,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 0,
+          "y": 48
+        },
+        "id": 26,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "CpuPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_DATATOOL_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "CpuPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_ENGINE_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "CpuPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_FEED_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "CpuPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_XL_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "E",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "App Service Plan CPU Percentage",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 30,
+              "gradientMode": "hue",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 8,
+          "y": 48
+        },
+        "id": 27,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "MemoryPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_DATATOOL_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "MemoryPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_ENGINE_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "MemoryPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_FEED_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "MemoryPercentage",
+              "metricNamespace": "microsoft.web/serverfarms",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_XL_RESOURCE_ASP}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "E",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "App Service Plan Memory Percentage",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 16,
+          "y": 48
+        },
+        "id": 28,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "cpu_percent",
+              "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_PSQL}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "memory_percent",
+              "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_PSQL}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "storage_percent",
+              "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_PSQL}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Postgres Server Performance",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 57
+        },
+        "id": 29,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "{{ ResourceName }}",
+              "allowedTimeGrainsMs": [
+                3600000
+              ],
+              "dimensionFilters": [],
+              "metricName": "UsedCapacity",
+              "metricNamespace": "microsoft.storage/storageaccounts",
+              "resourceGroup": "${RACING_DATATOOL_RESOURCE_GROUP}",
+              "resourceName": "${RACING_DOMAIN_RESOURCE_STORAGE}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Storage Account Used Capacity",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 57
+        },
+        "id": 30,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.3-997144b7",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Maximum",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                3600000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "NormalizedRUConsumption",
+              "metricNamespace": "microsoft.documentdb/databaseaccounts",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_DOCDB}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Average",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                300000
+              ],
+              "dimensionFilters": [],
+              "metricName": "DataUsage",
+              "metricNamespace": "microsoft.documentdb/databaseaccounts",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_DOCDB}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                300000
+              ],
+              "dimensionFilters": [],
+              "metricName": "IndexUsage",
+              "metricNamespace": "microsoft.documentdb/databaseaccounts",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_DOCDB}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Cosmos DB Performance ",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${AzureDataSourceID}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 57
+        },
+        "id": 38,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "9.1.5-0100a6a",
+        "targets": [
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "IncomingMessages",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "queryType": "Azure Monitor",
+            "refId": "A",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "OutgoingMessages",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "B",
+            "subscription": "${SUBSCRIPTION}"
+          },
+          {
+            "azureMonitor": {
+              "aggregation": "Total",
+              "alias": "",
+              "allowedTimeGrainsMs": [
+                60000,
+                300000,
+                900000,
+                1800000,
+                3600000,
+                21600000,
+                43200000,
+                86400000
+              ],
+              "dimensionFilters": [],
+              "metricName": "CapturedMessages",
+              "metricNamespace": "microsoft.eventhub/namespaces",
+              "resourceGroup": "${RACING_SHARED_RESOURCE_GROUP}",
+              "resourceName": "${RACING_RESOURCE_EHN}",
+              "timeGrain": "auto"
+            },
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "${AzureDataSourceID}"
+            },
+            "hide": false,
+            "queryType": "Azure Monitor",
+            "refId": "C",
+            "subscription": "${SUBSCRIPTION}"
+          }
+        ],
+        "title": "Event Hub Messages",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": false,
+    "schemaVersion": 37,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Racing Summary",
+    "version": 11,
+    "weekStart": ""
+  }

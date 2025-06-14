@@ -1,0 +1,4918 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 275,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 34,
+      "panels": [],
+      "title": "Bet",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 93,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "IncomingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "IncomingMessages",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "OutgoingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "OutgoingMessages",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ThrottledRequests",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "ThrottledMessages",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Bets Poller Event Hub",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "dtdurations"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 6,
+        "y": 1
+      },
+      "id": 107,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "union isfuzzy=true\r\n    availabilityResults,\r\n    requests,\r\n    exceptions,\r\n    pageViews,\r\n    traces,\r\n    customEvents,\r\n    dependencies\r\n| where message has \"New LastLogPkId\" \r\n| order by timestamp desc\r\n| take 1\r\n| extend \r\n    secondsBefore = datetime_diff('second', now(), timestamp)\r\n| project secondsBefore ",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A",
+          "subscriptions": [
+            "${SUBSCRIPTION}"
+          ]
+        }
+      ],
+      "title": "Bet - Last Update",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 11,
+        "y": 1
+      },
+      "id": 108,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^LastPkId$/",
+          "values": false
+        },
+        "text": {
+          "titleSize": 1,
+          "valueSize": 36
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "union isfuzzy=true\r\n    availabilityResults,\r\n    requests,\r\n    exceptions,\r\n    pageViews,\r\n    traces,\r\n    customEvents,\r\n    dependencies\r\n| where message contains \"New LastLogPkId\"\r\n| order by timestamp desc\r\n| take 1\r\n| extend LastPkId = customDimensions._lastLogPkId\r\n| project LastPkId ",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Bet - LastPkId",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 1
+      },
+      "id": 102,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 10,
+          "valueSize": 24
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "alias": "Scheduled",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "bet-history-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ScheduledMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "Incoming",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "DLQ",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "bet-history-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "DeadletteredMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Active Messages",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "bet-history-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ActiveMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Bet History Service Bus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "dash": [
+                0,
+                10
+              ],
+              "fill": "dot"
+            },
+            "lineWidth": 0,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 200
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 1
+      },
+      "id": 111,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.1-634af4ccb3",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend Bet_History_Total_Replication_Time_In_MS = todecimal(customDimensions.prop__bet_history_upsert_time)\r\n| where isnotempty(Bet_History_Total_Replication_Time_In_MS)\r\n| project timestamp, Bet_History_Total_Replication_Time_In_MS\r\n| order by timestamp desc",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BETH_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${BETH_RESOURCE_NAME_AI}",
+            "resultFormat": "time_series"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "End to End Bet History Replication Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 6,
+        "y": 3
+      },
+      "id": 109,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend Bet_History_Total_Replication_Time_MS = todecimal(customDimensions.prop__bet_history_replication_time)\r\n| where isnotempty(Bet_History_Total_Replication_Time_MS)\r\n| summarize Average_BetReplication_Time_MS = round(avg(Bet_History_Total_Replication_Time_MS), 0) \r\n| project-rename [\"Bet History Total\"] = Average_BetReplication_Time_MS",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BETH_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${BETH_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 8,
+        "y": 3
+      },
+      "id": 131,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend Bet_History_Upsert_Time_MS = todecimal(customDimensions.prop__bet_history_upsert_time)\r\n| where isnotempty(Bet_History_Upsert_Time_MS)\r\n| summarize \r\n    4_Average_Bet_History_Upsert_Time_MS = round(avg(Bet_History_Upsert_Time_MS), 0) \r\n| project-rename [\"BetHistory Upsert\"] = 4_Average_Bet_History_Upsert_Time_MS\r\n\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BETH_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${BETH_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 10,
+        "y": 3
+      },
+      "id": 110,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend Bet_To_LogBet_Replication_Time_In_MS = todecimal(customDimensions.tbs_bet_to_log_bet_time)\r\n| where isnotempty(Bet_To_LogBet_Replication_Time_In_MS)\r\n| summarize 1_Average_Bet_To_LogBet_Replication_Time_MS = round(avg(Bet_To_LogBet_Replication_Time_In_MS), 0)\r\n| project-rename [\"Bet to LogBet\"] = 1_Average_Bet_To_LogBet_Replication_Time_MS",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 12,
+        "y": 3
+      },
+      "id": 129,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend LogBet_To_TBS_Poller_Time_In_MS = todecimal(customDimensions.tbs_log_bet_poll_time)\r\n| where isnotempty(LogBet_To_TBS_Poller_Time_In_MS)\r\n// | project timestamp, LogBet_To_TBS_Poller_Time_In_MS\r\n| summarize 2_Average_LogBet_To_TBS_Poller_Time_MS = round(avg(LogBet_To_TBS_Poller_Time_In_MS), 0)\r\n| project-rename [\"LogBet to TBS Poller\"] = 2_Average_LogBet_To_TBS_Poller_Time_MS",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 14,
+        "y": 3
+      },
+      "id": 130,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend EventHub_To_Consumer_Time_MS = todecimal(customDimensions.prop__bet_history_writerreceived_time)\r\n| where isnotempty(EventHub_To_Consumer_Time_MS)\r\n| summarize 3_Average_EventHub_To_Consumer_Time_MS = round(avg(EventHub_To_Consumer_Time_MS), 0)\r\n| project-rename [\"EH to BetHistory\"] = 3_Average_EventHub_To_Consumer_Time_MS\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BETH_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${BETH_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 4
+      },
+      "id": 100,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "Size",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Bets EventHub Namespace Size",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 6,
+        "y": 5
+      },
+      "id": 132,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend Bet_History_Total_Replication_Time_MS = todecimal(customDimensions.prop__bet_domain_replication_time)\r\n| where isnotempty(Bet_History_Total_Replication_Time_MS)\r\n| summarize Average_BetReplication_Time_MS = round(avg(Bet_History_Total_Replication_Time_MS), 0) \r\n| project-rename [\"Bet Domain Total\"] = Average_BetReplication_Time_MS",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 8,
+        "y": 5
+      },
+      "id": 134,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend Bet_History_Upsert_Time_MS = todecimal(customDimensions.prop__bet_domain_upsert_time)\r\n| where isnotempty(Bet_History_Upsert_Time_MS)\r\n| summarize \r\n    4_Average_Bet_History_Upsert_Time_MS = round(avg(Bet_History_Upsert_Time_MS), 0) \r\n| project-rename [\"BetDomain Upsert\"] = 4_Average_Bet_History_Upsert_Time_MS\r\n\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 14,
+        "y": 5
+      },
+      "id": 133,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend EventHub_To_Consumer_Time_MS = todecimal(customDimensions.prop__bet_domain_writer_received_time)\r\n| where isnotempty(EventHub_To_Consumer_Time_MS)\r\n| summarize 3_Average_EventHub_To_Consumer_Time_MS = round(avg(EventHub_To_Consumer_Time_MS), 0)\r\n| project-rename [\"EH to BetDomain\"] = 3_Average_EventHub_To_Consumer_Time_MS\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 6
+      },
+      "id": 94,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ThrottledRequests",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "OutgoingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "IncomingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "C",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "QuotaExceededErrors",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "D",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ServerErrors",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${BET_RESOURCE_GROUP}",
+            "resourceName": "${BET_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "E",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Bets Poller Event Hub",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 6
+      },
+      "id": 103,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 10,
+          "valueSize": 24
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Scheduled",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "bet-domain-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ScheduledMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "Incoming",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "DLQ",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "bet-domain-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "DeadletteredMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Active Messages",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "bet-domain-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ActiveMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Bet Domain Service Bus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 200
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 6
+      },
+      "id": 135,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.2.5",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "traces\r\n| extend Bet_History_Total_Replication_Time_In_MS = todecimal(customDimensions.prop__bet_domain_upsert_time)\r\n| where isnotempty(Bet_History_Total_Replication_Time_In_MS)\r\n| project timestamp, Bet_History_Total_Replication_Time_In_MS\r\n| order by timestamp desc",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${BET_RESOURCE_GROUP_DATA}/providers/Microsoft.Insights/components/${BET_RESOURCE_NAME_DATA_AI}",
+            "resultFormat": "time_series"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "End to End Bet Domain Replication Time",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 4,
+      "panels": [],
+      "title": "Account - v2",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 12
+      },
+      "id": 117,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "IncomingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${ACCOUNT_RESOURCE_GROUP}",
+            "resourceName": "${ACCOUNT_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "IncomingMessages",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "OutgoingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${ACCOUNT_RESOURCE_GROUP}",
+            "resourceName": "${ACCOUNT_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "OutgoingMessages",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ThrottledRequests",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${ACCOUNT_RESOURCE_GROUP}",
+            "resourceName": "${ACCOUNT_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "ThrottledMessages",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Poller Event Hub",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsLocal"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 6,
+        "y": 12
+      },
+      "id": 140,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "valueSize": 22
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller Client\"\r\n| order by pollerTimestamp desc\r\n| take 1;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId)\r\n| where domain == \"User\"\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc\r\n| take 1;\r\nprint Poller = toscalar ( pollerLog ), Writer = toscalar (writerLog)\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Client - Last Update",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Delta"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "color": "#808080",
+                        "index": 0
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "to": 9
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 10,
+                      "result": {
+                        "color": "semi-dark-red",
+                        "index": 2
+                      },
+                      "to": 999
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 11,
+        "y": 12
+      },
+      "id": 146,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller Client\"\r\n| order by timestamp desc\r\n| take 1\r\n| project pollerLastPKId = customDimensions.LogPKId;\r\nlet writerLog = traces\r\n| where customDimensions.Domain == \"User\"\r\n| where customDimensions.LastPKId != \"\"\r\n| order by timestamp desc\r\n| take 1\r\n| project customDimensions.LastPKId;\r\nprint Poller=toscalar(pollerLog), Writer=toscalar(writerLog)",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "table"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Client - LastPkId",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "binary": {
+              "left": "Poller",
+              "operator": "-",
+              "reducer": "sum",
+              "right": "Writer"
+            },
+            "mode": "binary",
+            "reduce": {
+              "include": [
+                "poller",
+                "writer"
+              ],
+              "reducer": "mean"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 12
+      },
+      "id": 139,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 10,
+          "valueSize": 24
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Scheduled",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-user-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ScheduledMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "Incoming",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "DLQ",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-user-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "DeadletteredMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Active Messages",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-user-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ActiveMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Client Service Bus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 12
+      },
+      "id": 138,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.2.5",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller Client\"  // Possible values Poller Client, Poller Account, Poller ClientLimit, Poller AcTransaction, Poller ClientBankDetail, Poller ClientSelfExclusion,\r\n| order by pollerTimestamp desc;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId), latency = timestamp - customDimensions.LogDateTime\r\n| where domain == \"User\" // Possible Valies User, Wallet, RSG, TransactionHistory, Payment\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc;\r\npollerLog\r\n| join kind=inner writerLog on lastPKId\r\n| project\r\n    latencyInMilliseconds = latency / time(1ms),\r\n    writerTimestamp\r\n| order by writerTimestamp",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "time_series"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "E2E Client Replication Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 15
+      },
+      "id": 119,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "Size",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${ACCOUNT_RESOURCE_GROUP}",
+            "resourceName": "${ACCOUNT_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Account EventHub Namespace Size",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 17
+      },
+      "id": 118,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "alias": "",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ThrottledRequests",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${ACCOUNT_RESOURCE_GROUP}",
+            "resourceName": "${ACCOUNT_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "alias": "",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "IncomingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${ACCOUNT_RESOURCE_GROUP}",
+            "resourceName": "${ACCOUNT_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "alias": "",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "OutgoingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${ACCOUNT_RESOURCE_GROUP}",
+            "resourceName": "${ACCOUNT_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "C",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Poller Event Hub",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsLocal"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 6,
+        "y": 17
+      },
+      "id": 147,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "valueSize": 22
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller Account\"\r\n| order by pollerTimestamp desc\r\n| take 1;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId)\r\n| where domain == \"Wallet\"\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc\r\n| take 1;\r\nprint Poller = toscalar ( pollerLog ), Writer = toscalar (writerLog)\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Account - Last Update",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Delta"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "color": "#808080",
+                        "index": 0
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "to": 9
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 10,
+                      "result": {
+                        "color": "semi-dark-red",
+                        "index": 2
+                      },
+                      "to": 999
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 11,
+        "y": 17
+      },
+      "id": 148,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller Account\"\r\n| order by timestamp desc\r\n| take 1\r\n| project pollerLastPKId = customDimensions.LogPKId;\r\nlet writerLog = traces\r\n| where customDimensions.Domain == \"Wallet\"\r\n| where customDimensions.LastPKId != \"\"\r\n| order by timestamp desc\r\n| take 1\r\n| project customDimensions.LastPKId;\r\nprint Poller=toscalar(pollerLog), Writer=toscalar(writerLog)",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "table"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Account - LastPkId",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "binary": {
+              "left": "Poller",
+              "operator": "-",
+              "reducer": "sum",
+              "right": "Writer"
+            },
+            "mode": "binary",
+            "reduce": {
+              "include": [
+                "poller",
+                "writer"
+              ],
+              "reducer": "mean"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 17
+      },
+      "id": 150,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 10,
+          "valueSize": 24
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Scheduled",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-wallet-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ScheduledMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "Incoming",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "DLQ",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-wallet-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "DeadletteredMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Active Messages",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-wallet-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ActiveMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Account Service Bus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 17
+      },
+      "id": 149,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.2.5",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller Account\"  // Possible values Poller Client, Poller Account, Poller ClientLimit, Poller AcTransaction, Poller ClientBankDetail, Poller ClientSelfExclusion,\r\n| order by pollerTimestamp desc;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId), latency = timestamp - customDimensions.LogDateTime\r\n| where domain == \"Wallet\" // Possible Valies User, Wallet, RSG, TransactionHistory, Payment\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc;\r\npollerLog\r\n| join kind=inner writerLog on lastPKId\r\n| project\r\n    latencyInMilliseconds = latency / time(1ms),\r\n    writerTimestamp\r\n| order by writerTimestamp",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "time_series"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "E2E Account Replication Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsLocal"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 6,
+        "y": 22
+      },
+      "id": 151,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "valueSize": 22
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller ClientLimit\"\r\n| order by pollerTimestamp desc\r\n| take 1;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId)\r\n| where domain == \"RSG\"\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc\r\n| take 1;\r\nprint Poller = toscalar ( pollerLog ), Writer = toscalar (writerLog)\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "ClientLimit - Last Update",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Delta"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "color": "#808080",
+                        "index": 0
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "to": 9
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 10,
+                      "result": {
+                        "color": "semi-dark-red",
+                        "index": 2
+                      },
+                      "to": 999
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 11,
+        "y": 22
+      },
+      "id": 152,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller ClientLimit\"\r\n| order by timestamp desc\r\n| take 1\r\n| project pollerLastPKId = customDimensions.LogPKId;\r\nlet writerLog = traces\r\n| where customDimensions.Domain == \"RSG\"\r\n| where customDimensions.LastPKId != \"\"\r\n| order by timestamp desc\r\n| take 1\r\n| project customDimensions.LastPKId;\r\nprint Poller=toscalar(pollerLog), Writer=toscalar(writerLog)",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "table"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "ClientLimit - LastPkId",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "binary": {
+              "left": "Poller",
+              "operator": "-",
+              "reducer": "sum",
+              "right": "Writer"
+            },
+            "mode": "binary",
+            "reduce": {
+              "include": [
+                "poller",
+                "writer"
+              ],
+              "reducer": "mean"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 22
+      },
+      "id": 153,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 10,
+          "valueSize": 24
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Scheduled",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-rsg-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ScheduledMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "Incoming",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "DLQ",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-rsg-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "DeadletteredMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Active Messages",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-rsg-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ActiveMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "ClientLimit Service Bus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 22
+      },
+      "id": 154,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.2.5",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller ClientLimit\"  // Possible values Poller Client, Poller Account, Poller ClientLimit, Poller AcTransaction, Poller ClientBankDetail, Poller ClientSelfExclusion,\r\n| order by pollerTimestamp desc;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId), latency = timestamp - customDimensions.LogDateTime\r\n| where domain == \"RSG\" // Possible Valies User, Wallet, RSG, TransactionHistory, Payment\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc;\r\npollerLog\r\n| join kind=inner writerLog on lastPKId\r\n| project\r\n    latencyInMilliseconds = latency / time(1ms),\r\n    writerTimestamp\r\n| order by writerTimestamp",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "time_series"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "E2E ClientLimit Replication Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsLocal"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 6,
+        "y": 27
+      },
+      "id": 155,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "valueSize": 22
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller AcTransaction\"\r\n| order by pollerTimestamp desc\r\n| take 1;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId)\r\n| where domain == \"TransactionHistory\"\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc\r\n| take 1;\r\nprint Poller = toscalar ( pollerLog ), Writer = toscalar (writerLog)\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "AcTransaction - Last Update",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Delta"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "color": "#808080",
+                        "index": 0
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "to": 9
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 10,
+                      "result": {
+                        "color": "semi-dark-red",
+                        "index": 2
+                      },
+                      "to": 999
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 11,
+        "y": 27
+      },
+      "id": 156,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller AcTransaction\"\r\n| order by timestamp desc\r\n| take 1\r\n| project pollerLastPKId = customDimensions.LogPKId;\r\nlet writerLog = traces\r\n| where customDimensions.Domain == \"TransactionHistory\"\r\n| where customDimensions.LastPKId != \"\"\r\n| order by timestamp desc\r\n| take 1\r\n| project customDimensions.LastPKId;\r\nprint Poller=toscalar(pollerLog), Writer=toscalar(writerLog)",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "table"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "AcTransaction - LastPkId",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Delta",
+            "binary": {
+              "left": "Poller",
+              "operator": "-",
+              "reducer": "sum",
+              "right": "Writer"
+            },
+            "mode": "binary",
+            "reduce": {
+              "include": [
+                "poller",
+                "writer"
+              ],
+              "reducer": "mean"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 27
+      },
+      "id": 157,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 10,
+          "valueSize": 24
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Scheduled",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-actransaction-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ScheduledMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "Incoming",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "DLQ",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-actransaction-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "DeadletteredMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "alias": "Active Messages",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [
+              {
+                "dimension": "EntityName",
+                "filters": [
+                  "account-domain-actransaction-fallback"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "ActiveMessages",
+            "metricNamespace": "microsoft.servicebus/namespaces",
+            "resourceGroup": "${RESOURCE_GROUP_INFRA}",
+            "resourceName": "${RESOURCE_NAME_INFRA_SB}",
+            "timeGrain": "auto",
+            "top": ""
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "AcTransaction Service Bus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 27
+      },
+      "id": 158,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.2.5",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller AcTransaction\"  // Possible values Poller Client, Poller Account, Poller ClientLimit, Poller AcTransaction, Poller ClientBankDetail, Poller ClientSelfExclusion,\r\n| order by pollerTimestamp desc;\r\nlet writerLog = traces\r\n| project writerTimestamp=timestamp, domain = customDimensions.Domain, lastPKId = tostring(customDimensions.LastPKId), latency = timestamp - customDimensions.LogDateTime\r\n| where domain == \"TransactionHistory\" // Possible Valies User, Wallet, RSG, TransactionHistory, Payment\r\n| where lastPKId != \"\"\r\n| order by writerTimestamp desc;\r\npollerLog\r\n| join kind=inner writerLog on lastPKId\r\n| project\r\n    latencyInMilliseconds = latency / time(1ms),\r\n    writerTimestamp\r\n| order by writerTimestamp",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "time_series"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "E2E AcTransaction Replication Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsLocal"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 6,
+        "y": 32
+      },
+      "id": 159,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "valueSize": 22
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| project pollerTimestamp=timestamp, name, type, lastPKId = tostring(customDimensions.LogPKId)\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller ClientSelfExclusion\"\r\n| order by pollerTimestamp desc\r\n| take 1;\r\nprint Poller = toscalar ( pollerLog )\r\n",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "ClientSelfExclusion - Last Update",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Delta"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "color": "#808080",
+                        "index": 0
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "to": 9
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 10,
+                      "result": {
+                        "color": "semi-dark-red",
+                        "index": 2
+                      },
+                      "to": 999
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 11,
+        "y": 32
+      },
+      "id": 160,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let pollerLog = dependencies\r\n| where type == \"Poller_Event\"\r\n| where name == \"Poller ClientSelfExclusion\"\r\n| order by timestamp desc\r\n| take 1\r\n| project pollerLastPKId = customDimensions.LogPKId;\r\nprint Poller=toscalar(pollerLog)",
+            "resource": "/subscriptions/${SUBSCRIPTION}/resourceGroups/${ACC_RESOURCE_GROUP}/providers/Microsoft.Insights/components/${ACC_RESOURCE_NAME_AI}",
+            "resultFormat": "table"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "ClientSelfExclusion - LastPkId",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
+      "id": 26,
+      "panels": [],
+      "title": "Racing",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 36
+      },
+      "id": 41,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "IncomingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "IncomingMessages",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "OutgoingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "OutgoingMessages",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ThrottledRequests",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "ThrottledMessages",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Racing Poller Event Hub",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 18,
+        "x": 6,
+        "y": 36
+      },
+      "id": 113,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Count",
+            "alias": "Poller Web App",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "customNamespace": "microsoft.insights/components",
+            "dimensionFilters": [
+              {
+                "dimension": "cloud/roleName",
+                "filters": [
+                  "${ENVIRONMENT}-webapp-ng-racing-datatools-tbspollerracing-eau"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "exceptions/count",
+            "metricNamespace": "microsoft.insights/components",
+            "resourceGroup": "${RACING_RESOURCE_GROUP_DATA}",
+            "resourceName": "${RACING_RESOURCE_NAME_DATA_AI}",
+            "timeGrain": "PT1H"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Count",
+            "alias": "Consumer Func App",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "customNamespace": "microsoft.insights/components",
+            "dimensionFilters": [
+              {
+                "dimension": "cloud/roleName",
+                "filters": [
+                  "${ENVIRONMENT}-fnapp-ng-racing-datatools-eventhubconsumer-eau"
+                ],
+                "operator": "eq"
+              }
+            ],
+            "metricName": "exceptions/count",
+            "metricNamespace": "microsoft.insights/components",
+            "resourceGroup": "${RACING_RESOURCE_GROUP_DATA}",
+            "resourceName": "${RACING_RESOURCE_NAME_DATA_AI}",
+            "timeGrain": "PT1H"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "App Exception Counts",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 39
+      },
+      "id": 90,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.3.2-45041",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Average",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "Size",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Racing Event Hub Namespace Size",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 41
+      },
+      "id": 92,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ThrottledRequests",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "OutgoingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "IncomingMessages",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "C",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "QuotaExceededErrors",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "D",
+          "subscription": "${SUBSCRIPTION}"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "ServerErrors",
+            "metricNamespace": "microsoft.eventhub/namespaces",
+            "resourceGroup": "${RACING_RESOURCE_GROUP}",
+            "resourceName": "${RACING_RESOURCE_NAME_EHN}",
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "hide": false,
+          "queryType": "Azure Monitor",
+          "refId": "E",
+          "subscription": "${SUBSCRIPTION}"
+        }
+      ],
+      "title": "Racing Poller Event Hub",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "${DASHBOARD_NAME}",
+  "version": 15,
+  "weekStart": ""
+}

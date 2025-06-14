@@ -1,0 +1,142 @@
+parameters:
+  - name: env
+    type: string
+  - name: buildConfiguration
+    type: string
+    default: Release
+  - name: product
+    type: string
+    default: ng
+  - name: dependsOn
+    type: string
+    default: build
+  - name: serviceAccountName
+    type: string
+  - name: acrName
+    type: string
+    default: prodAcrBlackstream
+  - name: acrServiceAccountName
+    type: string
+    default: subscription-core-infra-prod 
+  - name: preBuildSteps
+    type: stepList
+    default: []
+  - name: postBuildSteps
+    type: stepList
+    default: []
+  - name: publishInfra
+    type: boolean
+    default: True
+  - name: sonarProjectKey
+    type: string
+    default: TBD
+  - name: sonarProjectName
+    type: string
+    default: TBD
+  - name: agentType
+    type: string
+    default: ubuntu-latest
+  - name: workspace
+    type: object
+    default:
+      name: "sample-solution"
+      projects:
+        - name: "project1"
+          path: "path1"
+          target: "docker | feeds | psql"
+        - name: "project2"
+          path: "path2"
+          target: "docker | feeds | psql"
+  
+stages:
+  - stage: build
+    displayName: build test push pub
+    jobs:
+      - job: build
+        pool:
+          vmImage: ${{parameters.agentType}}
+        steps:
+          - checkout: self
+            path: s/workload
+          - checkout: DevOps
+            path: s/DevOps
+          - ${{ parameters.preBuildSteps }}
+          - ${{ if ne(parameters.sonarProjectKey,'TBD') }}:
+            - task: SonarCloudPrepare@1
+              # Configures the Sonar Cloud scanner. The sonar tasks will only run if sonar key and name are passed to the template.
+              displayName: 'Prepare analysis on SonarCloud'
+              inputs:
+                SonarCloud: SonarCloud
+                organization: blackstream
+                projectKey: ${{ parameters.sonarProjectKey }}
+                projectName: ${{ parameters.sonarProjectName }}
+                extraProperties: |
+                  # Additional properties that will be passed to the scanner, 
+                  # Put one key=value per line, example:
+                  # sonar.exclusions=**/*.bin
+                  sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml
+            
+          - ${{ each project in parameters.workspace.projects }}:
+              - task: AzurePowerShell@5 
+                displayName: Create env file ${{ parameters.env}}
+                inputs:
+                  azureSubscription: ${{ parameters.serviceAccountName}}
+                  pwsh: true
+                  azurePowerShellVersion: LatestVersion
+                  scriptType: "filePath"
+                  scriptPath:  "$(Pipeline.Workspace)/s/DevOps/SharedScripts/create-nodejs-env-variables.ps1"
+                  ScriptArguments:  
+                    -environment "${{parameters.env}}"
+                    -appName "${{ project.name }}"
+                    -configPath "$(Pipeline.Workspace)/s/workload/infrastructure/terraform/environments"
+                    -envFilePath "$(Pipeline.Workspace)/s/workload/src/${{ project.name }}"
+                    -product "${{parameters.product}}"
+
+              - task: NodeTool@0
+                displayName: 'Install Node'
+                inputs:
+                  versionSpec: '16.14.0'
+
+              - task: Bash@3
+                displayName: 'yarn install'
+                inputs:
+                  targetType: inline
+                  script: |
+                    cd $(System.DefaultWorkingDirectory)/workload/src/${{ project.name }}
+                    yarn install
+
+              - task: Bash@3
+                displayName: 'Build App'
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    cd $(System.DefaultWorkingDirectory)/workload/src/${{ project.name }}
+                    yarn run build
+                    
+              - ${{ if ne(parameters.sonarProjectKey,'TBD') }}:
+                - task: SonarCloudAnalyze@1
+                  # Runs code analysis and sends the data to SonarCloud
+                  displayName: 'Run Code Analysis'
+                - task: SonarCloudPublish@1
+                  # Sends additional metrics and branch information to SonarCloud
+                  displayName: 'Publish Quality Gate Result'
+
+              - ${{ if eq(project.target,'docker') }}:
+                - task: AzureCLI@2
+                  displayName: ACR Image Build [${{ project.name}}]
+                  inputs:
+                    azureSubscription: ${{ parameters.acrServiceAccountName}}
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      cd $(System.DefaultWorkingDirectory)/workload
+                      Get-ChildItem
+                      $workSpaceName = "${{ parameters.workspace.name}}"
+                      az acr build -t $workSpaceName/${{ project.name }}:${{parameters.env}}-$(Build.BuildNumber) `
+                      -r ${{parameters.acrName}} --file ./src/${{ project.name }}/Dockerfile ./src/${{ project.name }}
+                  
+          - ${{ parameters.postBuildSteps }}
+          - publish: $(System.DefaultWorkingDirectory)/workload/infrastructure
+            artifact: infrastructure
+            displayName: Publish Infrastructure
+            condition: and(succeeded(),${{parameters.publishInfra}})

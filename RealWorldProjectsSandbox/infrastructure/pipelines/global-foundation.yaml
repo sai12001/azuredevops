@@ -1,0 +1,40 @@
+name: $(mainVersion).$(minorVersion).$(Date:yyyyMMdd).$(Rev:r)
+
+trigger:
+  branches:
+    include:
+    - main
+    - release/*
+  paths:
+    include:
+    - infrastructure/terraform/global
+    - infrastructure/environments/global
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  mainVersion: 1
+  minorVersion: 0
+  product: blackstream
+  buildConfiguration: Release
+  terraformFolder: infrastructure/terraform/global
+
+resources:
+  repositories:
+    - repository: DevOps
+      type: git
+      name: DevOps
+      ref: main
+
+stages:
+  - template: Templates/Release/infra-provision.yaml@DevOps
+    parameters:
+      env: global
+      azureDevOpsEnvName: core-infra-prod
+      serviceAccountName: subscription-core-infra-prod 
+      subscriptionName: blackstream-core-Infra-prod
+      dependsOn: null
+      product: $(product)
+      terraformFolder: $(terraformFolder)
+      executeDeployment: true

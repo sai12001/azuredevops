@@ -1,0 +1,12 @@
+{
+    "grafana": {
+        "databricks_driver_node_names": {
+            "dev": "0310629da1564fa5a0b3e2bfc6f41a31",
+            "stg": "2081c72eae5a4f3a913e5a3d10ba7fb2",
+            "prd": "82fcc3d0e7f0434480dd3d7e608b183c"
+        },
+        "databricks_alert_queries": {
+            "failedJobCount": "DatabricksJobs\r\n| where ActionName == \"runFailed\"\r\n| count"
+        }
+    }
+}

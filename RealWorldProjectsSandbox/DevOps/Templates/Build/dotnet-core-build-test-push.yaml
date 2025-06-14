@@ -1,0 +1,178 @@
+parameters:
+  - name: buildConfiguration
+    type: string
+    default: Release
+  - name: devOpsArtifactFeeds
+    type: string
+  - name: nugetConfigPath
+    type: string
+  - name: serviceAccountName
+    type: string
+  - name: acrName
+    type: string
+    default: prodAcrBlackstream
+  - name: acrServiceAccountName
+    type: string
+    default: subscription-core-infra-prod 
+  - name: preBuildSteps
+    type: stepList
+    default: []
+  - name: postBuildSteps
+    type: stepList
+    default: []
+  - name: publishInfra
+    type: boolean
+    default: True
+  - name: sonarProjectKey
+    type: string
+    default: TBD
+  - name: sonarProjectName
+    type: string
+    default: TBD
+  - name: publishApiM
+    type: boolean
+    default: True
+  - name: willPushFeeds
+    type: boolean
+    default: false
+  - name: agentType
+    type: string
+    default: ubuntu-latest
+  - name: workspace
+    type: object
+    default:
+      name: "sample-solution"
+      projects:
+        - name: "project1"
+          path: "path1"
+          target: "docker | feeds | psql"
+        - name: "project2"
+          path: "path2"
+          target: "docker | feeds | psql"
+
+stages:
+  - stage: build
+    displayName: build test push pub
+    jobs:
+      - job: build
+        pool:
+          vmImage: ${{parameters.agentType}}
+        steps:
+          - checkout: self
+            path: s/workload
+          - checkout: DevOps
+            path: s/DevOps
+          - ${{ parameters.preBuildSteps }}
+          - ${{ if ne(parameters.sonarProjectKey,'TBD') }}:
+            - task: SonarCloudPrepare@1
+              # Configures the Sonar Cloud scanner. The sonar tasks will only run if sonar key and name are passed to the template.
+              displayName: 'Prepare analysis on SonarCloud'
+              inputs:
+                SonarCloud: SonarCloud
+                organization: blackstream
+                projectKey: ${{ parameters.sonarProjectKey }}
+                projectName: ${{ parameters.sonarProjectName }}
+                extraProperties: |
+                  # Additional properties that will be passed to the scanner, 
+                  # Put one key=value per line, example:
+                  # sonar.exclusions=**/*.bin
+                  sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml
+          - pwsh: |
+              $PAT = "$(System.AccessToken)"
+              $Path = "$(nugetConfigPath)"
+              (Get-Content $Path) -replace '%{PAT}%',"$PAT" | Out-File $Path
+              Get-Content $Path | Out-String
+            displayName: Update Nuget Config
+          - task: DotNetCoreCLI@2
+            displayName: Restore DotNet Application
+            inputs:
+              command: restore
+              projects: "workload/**/*.csproj"
+              # feedsToUse: select
+              feedsToUse: config
+              nugetConfigPath: ${{ parameters.nugetConfigPath }}
+          - task: DotNetCoreCLI@2
+            displayName: Build DotNet Application
+            inputs:
+              command: build
+              projects: "workload/**/*.sln"
+              arguments: ${{ format('--no-restore --configuration {0}', parameters.buildConfiguration) }}
+          - task: DotNetCoreCLI@2
+            displayName: Dotnet test PR coverage
+            inputs:
+              command: test
+              projects: |
+                workload/**/.[Tt]ests/*.csproj
+                workload/**/.[Tt]ests.csproj
+                workload/**/.UnitTests/*.csproj
+              testRunTitle: PR Tests
+              arguments: ${{ format('--no-restore --no-build --configuration {0} --collect "Code coverage"', parameters.buildConfiguration) }}
+            condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+          - task: DotNetCoreCLI@2
+            displayName: Test DotNet Application
+            inputs:
+              command: test
+              projects: |
+                workload/***.[Tt]ests/*.csproj
+                workload/**/*.[Tt]ests.csproj
+                workload/**/*.UnitTests/*.csproj
+                workload/**/*.[Ss]pecs.csproj
+                workload/***.[Ss]pecs.csproj
+              arguments: ${{ format('--no-restore --no-build --filter TestCategory!=Integration --configuration {0} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover --nologo "--logger:console;verbosity=normal"', parameters.buildConfiguration) }}
+              publishTestResults: true
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+          - ${{ if ne(parameters.sonarProjectKey,'TBD') }}:
+            - task: SonarCloudAnalyze@1
+              # Runs code analysis and sends the data to SonarCloud
+              displayName: 'Run Code Analysis'
+            - task: SonarCloudPublish@1
+              # Sends additional metrics and branch information to SonarCloud
+              displayName: 'Publish Quality Gate Result'
+          - ${{ each project in parameters.workspace.projects }}:
+              - ${{ if eq(project.target,'docker') }}:
+                - task: AzureCLI@2
+                  displayName: ACR Image Build [${{ project.name}}]
+                  inputs:
+                    azureSubscription: ${{ parameters.acrServiceAccountName}}
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      cd $(System.DefaultWorkingDirectory)/workload
+                      Get-ChildItem
+                      $workSpaceName = "${{ parameters.workspace.name}}"
+                      az acr build -t $workSpaceName/${{ project.name }}:$(Build.BuildNumber) `
+                      -r ${{parameters.acrName}} --file ./src/${{project.path}}/Dockerfile ./src
+              - ${{ if eq(project.target,'feeds')}}:
+                - task: DotNetCoreCLI@2
+                  displayName: Pack Packages [${{ project.name}}]
+                  inputs:
+                    command: pack
+                    packagesToPack: "workload/src/${{project.path}}/*.csproj"
+                    versioningScheme: byBuildNumber
+                    packDirectory: "$(Build.ArtifactStagingDirectory)/${{project.path}}/"
+                - task: DotNetCoreCLI@2
+                  condition: ${{ or(parameters.willPushFeeds, eq(variables['Build.SourceBranchName'],'main') )}}
+                  displayName: Push Packages [${{ project.name}}]
+                  inputs:
+                    command: push
+                    packagesToPush: "$(Build.ArtifactStagingDirectory)/${{project.path}}/*.nupkg;!$(Build.ArtifactStagingDirectory)/${{project.path}}/*.symbols.nupkg"
+                    nuGetFeedType: internal
+                    publishVstsFeed: ${{ parameters.devOpsArtifactFeeds }}
+              - ${{ if eq(project.target,'psql')}}:
+                - task: CopyFiles@2
+                  inputs:
+                    SourceFolder: workload/src/${{project.path}}
+                    contents: '**/bin/**'
+                    targetFolder: $(Build.ArtifactStagingDirectory)/${{project.path}}
+                - publish: $(Build.ArtifactStagingDirectory)/${{project.path}}/bin/Release
+                  artifact: ${{project.path}}
+                  displayName: Publish Binaries
+          - ${{ parameters.postBuildSteps }}
+          - publish: $(System.DefaultWorkingDirectory)/workload/infrastructure
+            artifact: infrastructure
+            displayName: Publish Infrastructure
+            condition: and(succeeded(),${{parameters.publishInfra}})
+          - publish: $(System.DefaultWorkingDirectory)/workload/apiManagement
+            artifact: apiManagement
+            displayName: Publish Apis
+            condition: and(succeeded(),${{parameters.publishApiM}})

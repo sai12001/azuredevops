@@ -1,0 +1,86 @@
+parameters:
+  - name: env
+    type: string
+  - name: product
+    type: string
+    default: ng
+  - name: dependsOn
+    type: string
+    default: build
+  - name: serviceAccountName
+    type: string
+  - name: subscriptionName
+    type: string
+  - name: acrSubscriptionName
+    type: string
+    default: subscription-core-infra-prod
+  - name: executeDeployment
+    type: boolean
+    default: false
+  - name: acrName
+    type: string
+    default: prodAcrBlackstream
+  - name: azureDevOpsEnvName
+    type: string
+  - name: solutionTerraformFolder
+    type: string
+  - name: solutionName
+    type: string
+  - name: projects
+    type: object
+    default:
+      - appname: psql                  
+        path:  Template.DBup
+        appType: psql
+        psqlKvName: dev-kv-ng-whatever-eau 
+        psqlSecretTemplate: psql-connection-template-ado-dev-psql-whatever-shared
+        dbName: db-from-solution
+
+
+stages:
+  - stage: ${{ format('stage_deploy_{0}', parameters.env) }}
+    displayName: ${{ format('psql deploy {0}', parameters.env) }}
+    dependsOn: ${{ parameters.dependsOn}}
+    condition: and(succeeded(),or(${{ parameters.executeDeployment}}, or(startsWith(variables['Build.SourceBranch'],'refs/heads/release'), eq(variables['Build.SourceBranchName'],'main')) ))
+    jobs:
+      - ${{ each project in parameters.projects }}:
+        - deployment: ${{ format('psql_deploy_{0}', parameters.env) }}
+          displayName: ${{ format('Deploy pSql [{0}]', project.appName) }}
+          environment: ${{ parameters.azureDevOpsEnvName }}
+          pool:
+            name: vmss-private-agents-win
+          workspace:
+            clean: all
+          variables:
+            env: ${{ parameters.env }}
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    artifact: ${{project.path}}
+                    path: s/workload
+                - task: AzureKeyVault@2
+                  inputs:
+                    azureSubscription: ${{ parameters.serviceAccountName }}
+                    KeyVaultName: ${{project.psqlKvName}}
+                    SecretsFilter: ${{project.psqlSecretTemplate}}
+                    RunAsPreJob: false
+                - pwsh: |
+                    if("${{project.runtimeVersion}}" -ieq ""){
+                      $runtimeVersion= "net6.0"
+                    } 
+                    else{
+                      $runtimeVersion= "${{project.runtimeVersion}}"
+                    }
+                    cd s/workload/$runtimeVersion
+                    $connectionstringTemplate = "$(${{project.psqlSecretTemplate}})"
+                    $connectiongString = "$connectionstringTemplate" -f "${{project.dbName}}"
+                    $exeNameWithoutExt = "${{project.path}}"
+                    mv "$exeNameWithoutExt.exe" "DBup.exe" -Force
+                    ./DBup.exe -c "$connectiongString"
+                    if($LASTEXITCODE -eq 0) { Write-Host "DBup executed successfully" } 
+                    else { Write-Error "DBup failed. Check logs for details." }
+                  displayName: Run DBup
+

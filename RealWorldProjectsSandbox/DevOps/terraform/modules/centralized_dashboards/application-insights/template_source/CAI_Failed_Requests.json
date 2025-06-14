@@ -1,0 +1,53 @@
+{
+    "datasource": {
+      "type": "grafana-azure-monitor-datasource",
+      "uid": "${AzureDataSourceID}"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "color": {
+          "mode": "thresholds"
+        },
+        "mappings": [],
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "red",
+              "value": 80
+            }
+          ]
+        }
+      },
+      "overrides": []
+    },
+    "gridPos": {
+      "h": 6,
+      "w": 24,
+      "x": 0,
+      "y": 6
+    },
+    "id": 4,
+    "options": {
+      "colorMode": "background",
+      "graphMode": "area",
+      "justifyMode": "auto",
+      "orientation": "auto",
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "textMode": "auto"
+    },
+    "pluginVersion": "9.3.1-634af4ccb3",
+    "targets": [],
+    "title": "Failed Requests",
+    "type": "stat"
+  }

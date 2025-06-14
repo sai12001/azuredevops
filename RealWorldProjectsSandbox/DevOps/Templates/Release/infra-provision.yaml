@@ -1,0 +1,147 @@
+parameters:
+  - name: env
+    type: string
+  - name: product
+    type: string
+    default: ng
+  - name: dependsOn
+    type: string
+    default: 'null'
+  - name: serviceAccountName
+    type: string
+  - name: subscriptionName
+    type: string
+  - name: azureDevOpsEnvName
+    type: string
+  - name: terraformFolder
+    type: string
+  - name: executeDeployment
+    type: boolean
+    default: false
+
+stages:
+  - stage: ${{ format('stage_plan_{0}', parameters.env) }}
+    displayName: ${{ format('plan {0}', parameters.env) }}
+    condition: and(succeeded(),or(${{ parameters.executeDeployment}}, or(startsWith(variables['Build.SourceBranch'],'refs/heads/release'), eq(variables['Build.SourceBranchName'],'main')) ))
+    ${{ if ne(parameters.dependsOn,'null') }}:
+      dependsOn: ${{ parameters.dependsOn }}
+    jobs:
+      - deployment: ${{ format('job_plan_{0}', parameters.env) }}
+        displayName: Plan For Review
+        environment: "env-bypass"
+        pool:
+          vmImage: windows-latest
+        variables:
+          env: ${{ parameters.env }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: DevOps
+                  path: s/DevOps
+                - checkout: self
+                  path: s/workload
+                - task: UniversalPackages@0
+                  displayName: Terraform Support Download
+                  inputs:
+                    downloadDirectory: $(Pipeline.Workspace)/s/binaries
+                    vstsFeed: DevOps
+                    vstsFeedPackage: terrafrom_support
+                    vstsPackageVersion: 1.2.2
+                - powershell: |
+                    cd $(Pipeline.Workspace)/s/binaries
+                    ls
+                    Write-Host "##vso[task.prependpath]$(Pipeline.Workspace)/s/binaries"
+                  displayName: Update Path
+                - task: AzureCLI@2
+                  displayName: Plan Infra
+                  inputs:
+                    azureSubscription: ${{ parameters.serviceAccountName}}
+                    addSpnToEnvironment: true
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      terraform --version
+                      terragrunt --veresion
+                      cd $(Pipeline.Workspace)/s/workload
+                      $env = "${{ parameters.env }}"
+                      $env:TF_VAR_environment = "$env"
+                      $env:ARM_CLIENT_ID  =  $Env:servicePrincipalId
+                      $env:ARM_CLIENT_SECRET  = $Env:servicePrincipalKey
+                      $env:ARM_SUBSCRIPTION_ID = $(
+                        (az account list --all --query "[].[name,id]" -o tsv `
+                        | Where-Object {
+                          $_ -Match "${{ parameters.subscriptionName}}"
+                        } `
+                        | Select-Object -First 1
+                        ) -Split "`t"
+                      )[1]
+                      $env:ARM_TENANT_ID =  $Env:tenantId
+                      $env:TG_LOG  =  "info"
+
+                      cd "${{ parameters.terraformFolder}}"
+                      terragrunt init
+                      terragrunt plan
+  - stage: ${{ format('stage_deploy_{0}', parameters.env) }}
+    displayName: ${{ format('provision infra {0}', parameters.env) }}
+    dependsOn: ${{ format('stage_plan_{0}', parameters.env) }}
+    condition: and(succeeded(),or(${{ parameters.executeDeployment}}, or(startsWith(variables['Build.SourceBranch'],'refs/heads/release'), eq(variables['Build.SourceBranchName'],'main')) ))
+    jobs:
+    - deployment: ${{ format('job_deploy_{0}', parameters.env) }}
+      displayName: Provision Infra
+      environment: ${{ parameters.azureDevOpsEnvName }}
+      workspace:
+        clean: all
+      pool:
+        name: vmss-private-agents-win
+      variables:
+        env: ${{ parameters.env }}
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - checkout: DevOps
+                path: s/DevOps
+              - checkout: self
+                path: s/workload
+              - task: UniversalPackages@0
+                displayName: Terraform Support Download
+                inputs:
+                  downloadDirectory: $(Pipeline.Workspace)/s/binaries
+                  vstsFeed: DevOps
+                  vstsFeedPackage: terrafrom_support
+                  vstsPackageVersion: 1.2.2
+              - powershell: |
+                  cd $(Pipeline.Workspace)/s/binaries
+                  ls
+                  Write-Host "##vso[task.prependpath]$(Pipeline.Workspace)/s/binaries"
+                displayName: Update Path
+              - task: AzureCLI@2
+                displayName: Provision Shared Infra
+                inputs:
+                  azureSubscription: ${{ parameters.serviceAccountName}}
+                  addSpnToEnvironment: true
+                  scriptType: pscore
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    terraform --version
+                    terragrunt --veresion
+                    cd $(Pipeline.Workspace)/s/workload
+                    $env = "${{ parameters.env }}"
+                    $env:TF_VAR_environment = "$env"
+                    $env:ARM_CLIENT_ID  =  $Env:servicePrincipalId
+                    $env:ARM_CLIENT_SECRET  = $Env:servicePrincipalKey
+                    $env:ARM_SUBSCRIPTION_ID = $(
+                      (az account list --all --query "[].[name,id]" -o tsv `
+                      | Where-Object {
+                        $_ -Match "${{ parameters.subscriptionName}}"
+                      } `
+                      | Select-Object -First 1
+                      ) -Split "`t"
+                    )[1]
+                    $env:ARM_TENANT_ID =  $Env:tenantId
+                    $env:TG_LOG  =  "info"
+
+                    cd "${{ parameters.terraformFolder}}"
+                    terragrunt init
+                    terragrunt apply -auto-approve                      

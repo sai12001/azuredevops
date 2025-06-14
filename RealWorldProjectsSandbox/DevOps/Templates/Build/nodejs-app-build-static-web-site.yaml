@@ -1,0 +1,139 @@
+parameters:
+  - name: env
+    type: string
+  - name: buildConfiguration
+    type: string
+    default: Release
+  - name: product
+    type: string
+    default: ng
+  - name: dependsOn
+    type: string
+    default: build
+  - name: serviceAccountName
+    type: string
+  - name: subscriptionName
+    type: string
+  - name: acrName
+    type: string
+    default: prodAcrBlackstream
+  - name: acrServiceAccountName
+    type: string
+    default: subscription-core-infra-prod
+  - name: azureDevOpsEnvName
+    type: string
+  - name: solutionTerraformFolder
+    type: string 
+  - name: executeDeployment
+    type: boolean
+    default: false
+  - name: preBuildSteps
+    type: stepList
+    default: []
+  - name: postBuildSteps
+    type: stepList
+    default: []
+  - name: publishInfra
+    type: boolean
+    default: True
+  - name: sonarProjectKey
+    type: string
+    default: TBD
+  - name: sonarProjectName
+    type: string
+    default: TBD
+  - name: agentType
+    type: string
+    default: ubuntu-latest
+  - name: solutionName
+    type: string
+  - name: projects
+    type: object
+    default:
+      - appName: "sample1"
+        path: "path"
+
+stages:
+  - stage: ${{ format('stage_build_{0}', parameters.env) }}
+    condition: and(succeeded(),or(${{ parameters.executeDeployment }}, or(startsWith(variables['Build.SourceBranch'],'refs/heads/release'), eq(variables['Build.SourceBranchName'],'main')) ))
+    displayName: ${{ format('stage_build_{0}', parameters.env) }}
+    jobs:
+      - deployment: build
+        displayName: build
+        environment: ${{ parameters.azureDevOpsEnvName }}
+        pool:
+          vmImage: ${{parameters.agentType}}
+        variables:
+          env: ${{ parameters.env }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  path: s/workload
+                - checkout: DevOps
+                  path: s/DevOps
+                - ${{ if ne(parameters.sonarProjectKey,'TBD') }}:
+                  - task: SonarCloudPrepare@1
+                    # Configures the Sonar Cloud scanner. The sonar tasks will only run if sonar key and name are passed to the template.
+                    displayName: 'Prepare analysis on SonarCloud'
+                    inputs:
+                      SonarCloud: SonarCloud
+                      organization: blackstream
+                      projectKey: ${{ parameters.sonarProjectKey }}
+                      projectName: ${{ parameters.sonarProjectName }}
+                      extraProperties: |
+                        # Additional properties that will be passed to the scanner, 
+                        # Put one key=value per line, example:
+                        # sonar.exclusions=**/*.bin
+                        sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml
+                  
+                - task: NodeTool@0
+                  displayName: 'Install Node'
+                  inputs:
+                    versionSpec: '16.14.0'
+
+                - task: Bash@3
+                  displayName: 'yarn install'
+                  inputs:
+                    targetType: inline
+                    script: |
+                      cd $(System.DefaultWorkingDirectory)/workload/src
+                      yarn install
+
+                - ${{ each project in parameters.projects }}:
+                  - task: Bash@3
+                    displayName: 'Build App'
+                    inputs:
+                      targetType: 'inline'
+                      script: |
+                        cd $(System.DefaultWorkingDirectory)/workload/src
+                        yarn nx reset
+                        yarn nx run ${{ project.path }}:build
+                        
+                  - ${{ if ne(parameters.sonarProjectKey,'TBD') }}:
+                    - task: SonarCloudAnalyze@1
+                      # Runs code analysis and sends the data to SonarCloud
+                      displayName: 'Run Code Analysis'
+                    - task: SonarCloudPublish@1
+                      # Sends additional metrics and branch information to SonarCloud
+                      displayName: 'Publish Quality Gate Result'
+
+                  - task: CopyFiles@2
+                    inputs:
+                      SourceFolder: $(System.DefaultWorkingDirectory)/workload/src
+                      contents: '**/dist/apps/**'
+                      targetFolder: $(Build.ArtifactStagingDirectory)/${{ project.path }}
+
+                  - publish: $(Build.ArtifactStagingDirectory)/${{ project.path }}
+                    artifact: ${{ project.path }}
+                    displayName: Publish Binaries
+
+                - ${{ parameters.postBuildSteps }}
+                - publish: $(System.DefaultWorkingDirectory)/workload/infrastructure
+                  artifact: infrastructure
+                  displayName: Publish Infrastructure
+                  condition: and(succeeded(),${{parameters.publishInfra}})
+
+  
+

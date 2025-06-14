@@ -1,0 +1,390 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 320,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${AzureDataSourceID}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": true,
+            "width": 20
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 444
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kind"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 194
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tags"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 630
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Domain"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 78
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AllTags"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 707
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Provisioner"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 113
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 425
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SelectedTags"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 69
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Column1"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 549
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Column2"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 467
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "y"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 292
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "inter"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 612
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "comman"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 899
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "commonTags"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 515
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Tags"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 184
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tags1"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 712
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "all_tags"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 767
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 23,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.3.6",
+      "targets": [
+        {
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "azureResourceGraph": {
+            "query": "resources\r\n| extend resourceTags=bag_keys(parse_json(tags))\r\n| extend selectedTags = split(\"$${tags:raw}\", ',')\r\n| extend intersect = set_intersect(selectedTags, resourceTags)\r\n| where type !has(\"extensions\")\r\n| where array_length(selectedTags) != array_length(intersect)\r\n| project name, type, all_tags=tags"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${AzureDataSourceID}"
+          },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": [
+            "${SUBSCRIPTION}"
+          ]
+        }
+      ],
+      "title": "Unused Resource Details Type",
+      "type": "table"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "provisioner"
+          ],
+          "value": [
+            "provisioner"
+          ]
+        },
+        "description": "Get resources which do not have selected tags",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Select Tags to get Resources without selected Tags",
+        "multi": true,
+        "name": "tags",
+        "options": [
+          {
+            "selected": true,
+            "text": "provisioner",
+            "value": "provisioner"
+          },
+          {
+            "selected": false,
+            "text": "domain",
+            "value": "domain"
+          },
+          {
+            "selected": false,
+            "text": "environment",
+            "value": "environment"
+          },
+          {
+            "selected": false,
+            "text": "project",
+            "value": "project"
+          },
+          {
+            "selected": false,
+            "text": "solution_name",
+            "value": "solution_name"
+          },
+          {
+            "selected": false,
+            "text": "product",
+            "value": "product"
+          },
+          {
+            "selected": false,
+            "text": "hidden-title",
+            "value": "hidden-title"
+          }
+        ],
+        "query": "provisioner, domain, environment, project, solution_name, product, hidden-title",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "2023-02-15T10:31:03.472Z",
+    "to": "2023-02-23T10:31:03.472Z"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "${ENVIRONMENT} - Untagged Resource Details",
+  "version": 12,
+  "weekStart": ""
+}

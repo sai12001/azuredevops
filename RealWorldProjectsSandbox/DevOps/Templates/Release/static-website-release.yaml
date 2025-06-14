@@ -1,0 +1,57 @@
+parameters:
+  - name: env
+    type: string
+  - name: product
+    type: string
+    default: ng
+  - name: dependsOn
+    type: string
+    default: build
+  - name: serviceAccountName
+    type: string
+  - name: subscriptionName
+    type: string
+  - name: executeDeployment
+    type: boolean
+    default: false
+  - name: azureDevOpsEnvName
+    type: string
+  - name: solutionTerraformFolder
+    type: string
+  - name: solutionName
+    type: string
+  - name: projects
+    type: object
+    default:
+      - appname: "sample"
+        path: "application-path"
+        storageaccount: "stasample"
+        
+stages:
+
+  - template: ./infra-provision.yaml
+    parameters:
+      env: ${{ parameters.env }}
+      product: ${{parameters.product}}
+      dependsOn: ${{ parameters.dependsOn}}
+      serviceAccountName: ${{parameters.serviceAccountName}}
+      subscriptionName: ${{parameters.subscriptionName}}
+      azureDevOpsEnvName: ${{parameters.azureDevOpsEnvName}}
+      terraformFolder: ${{parameters.solutionTerraformFolder}}
+      executeDeployment: ${{parameters.executeDeployment}}
+
+  - stage: ${{ format('stage_deploy_app_{0}', parameters.env) }}
+    displayName: ${{ format('deploy {0}', parameters.env) }}
+    dependsOn: ${{ format('stage_deploy_{0}', parameters.env) }}
+    condition: and(succeeded(),or(${{ parameters.executeDeployment}}, or(startsWith(variables['Build.SourceBranch'],'refs/heads/release'), eq(variables['Build.SourceBranchName'],'main')) ))
+    jobs:
+      - template: ./job-template-static-website-deploy.yaml
+        parameters:
+          env: ${{ parameters.env }}
+          azureDevOpsEnvName: ${{parameters.azureDevOpsEnvName}}
+          product: ${{parameters.product}}
+          solutionName: ${{parameters.solutionName}}
+          dependsOn: ${{ format('job_deploy_{0}', parameters.env) }}
+          serviceAccountName: ${{ parameters.serviceAccountName}}
+          projects: ${{ parameters.projects}}
+          executeDeployment: ${{ parameters.executeDeployment}}

@@ -1,0 +1,3 @@
+# Ignore Jetbrains Rider Folder
+.idea
+terraform/modules/centralized_dashboards/app-service-plan/dashboard_templates/cent_asp_dashboard.json

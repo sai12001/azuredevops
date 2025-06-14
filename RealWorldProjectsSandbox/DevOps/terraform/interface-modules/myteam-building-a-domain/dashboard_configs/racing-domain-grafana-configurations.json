@@ -1,0 +1,9 @@
+{
+    "grafana": {
+        "storage_account_names": {
+            "dev": "devstangracingdomainvvab",
+            "stg": "stgstangracingdomainolgy",
+            "prd": "prdstangracingdomainolgy"
+        }
+    }
+}
